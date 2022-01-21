@@ -1,0 +1,40 @@
+﻿@page "/AddProduct"
+
+@using AlNabaa_Store.BackEnd.InterFaces
+@using AlNabaa_Store.Models 
+@inject IProducts  _IProducts
+@inject IJSRuntime _Js
+
+<div class="container" style="background-color:lightblue;margin:10px;padding:10px;border:5px dashed">
+    <EditForm Model="Product"  OnValidSubmit="SendProduct">
+        <div class="form-row">
+            <div class="col">
+                <input required type="text" class="form-control" @bind-value="Product.Name" placeholder="Product Name" />
+            </div>
+            <div class="col">
+                <input required type="text" class="form-control" @bind-value="Product.Company" placeholder="Company" />
+            </div>
+        </div>
+        <input required type="text" class="form-control" @bind-value="Product.GraphicCard" placeholder="Graphic Card"/>
+        <input required type="text" class="form-control" @bind-value="Product.RAM" placeholder="RAM"/>
+        <input required type="text" class="form-control" @bind-value="Product.CPU"  placeholder="CPU"/>
+        <input required type="text" class="form-control" @bind-value="Product.HARD"  placeholder="HARD"/>
+        <input required type="text" class="form-control" @bind-value="Product.Type" placeholder="TYPE of Hard"/>
+        <input required type="number" class="form-control" @bind-value="Product.Price" placeholder="Price"/>
+        <br />
+        <button class="btn btn-warning form-control">Add Product</button>
+    </EditForm>
+</div>
+
+@code {
+
+    public ProductsModel Product { get; set; } = new ProductsModel();
+
+    private async Task SendProduct()
+    {
+        var Result = await _IProducts.AddProduct(Product);
+        await _Js.InvokeVoidAsync("alert", Result);
+        Product = new ProductsModel();
+    }
+
+} 

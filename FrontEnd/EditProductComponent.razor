@@ -1,0 +1,69 @@
+﻿@page "/EditProduct/{Id}"
+
+@inject AlNabaa_Store.BackEnd.InterFaces.IProducts _Products
+@inject IJSRuntime _js
+
+
+
+<div class="container" style="background-color:lightblue;margin:10px;padding:10px;border:5px dashed">
+    <EditForm Model="Product" OnValidSubmit="EditProduct">
+        <div class="form-row">
+            <div class="col">
+                <input required type="text" class="form-control" @bind-value="Product.Name" placeholder="Product Name" />
+            </div>
+            <div class="col">
+                <input required type="text" class="form-control" @bind-value="Product.Company" placeholder="Company" />
+            </div>
+        </div>
+        <input required type="text" class="form-control" @bind-value="Product.GraphicCard" placeholder="Graphic Card" />
+        <input required type="text" class="form-control" @bind-value="Product.RAM" placeholder="RAM" />
+        <input required type="text" class="form-control" @bind-value="Product.CPU" placeholder="CPU" />
+        <input required type="text" class="form-control" @bind-value="Product.HARD" placeholder="HARD" />
+        <input required type="text" class="form-control" @bind-value="Product.Type" placeholder="TYPE of Hard" />
+        <input required type="number" class="form-control" @bind-value="Product.Price" placeholder="Price" />
+        <br />
+        <button class="btn btn-warning form-control">Edit Product</button>
+    </EditForm>
+</div>
+
+
+
+
+
+
+<h3>the Product Id is : @Id</h3>
+
+
+@code {
+
+    [Parameter]   //حد او رقم
+    public string Id { get; set; }
+
+    public Models.ProductsModel Product { get; set; } = new Models.ProductsModel();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Product = await _Products.GetProductDetails(int.Parse(Id));
+    }
+
+
+    private async Task EditProduct()
+    {
+        var result =  await _js.InvokeAsync<bool>("confirm","هل انت متاكد من تعديل المنتج");
+        if (result == true)
+        {
+            var Message =  await _Products.EditProduct(Product);
+            await _js.InvokeVoidAsync("alert", Message);
+        }
+        else
+        {
+            return;
+        }
+    }
+
+
+
+
+
+}
